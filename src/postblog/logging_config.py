@@ -8,12 +8,12 @@
 import logging
 import sys
 from datetime import datetime
-from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Literal
+
 
 # ログディレクトリ
-LOG_DIR = Path(__file__).parent.parent.parent.parent / "logs"
+LOG_DIR = Path.home() / ".postblog" / "logs"
 
 # デフォルト設定
 DEFAULT_LOG_LEVEL = logging.INFO
@@ -49,10 +49,7 @@ def setup_logging(
         level = getattr(logging, level.upper(), logging.INFO)
 
     # ログディレクトリの設定
-    if log_dir is None:
-        log_dir = LOG_DIR
-    else:
-        log_dir = Path(log_dir)
+    log_dir = LOG_DIR if log_dir is None else Path(log_dir)
 
     # ルートロガーの設定
     root_logger = logging.getLogger()
@@ -117,4 +114,6 @@ class LoggerMixin:
     @property
     def logger(self) -> logging.Logger:
         """クラス名をベースにしたロガーを返す。"""
-        return logging.getLogger(self.__class__.__module__ + "." + self.__class__.__name__)
+        return logging.getLogger(
+            self.__class__.__module__ + "." + self.__class__.__name__
+        )
